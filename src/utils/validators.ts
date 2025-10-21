@@ -2,14 +2,14 @@ import { body, param, query, ValidationChain } from 'express-validator';
 
 export const registerValidation: ValidationChain[] = [
   body('email').isEmail().normalizeEmail().withMessage('Valid email is required'),
-  body('password')
-    .isLength({ min: 8 })
-    .withMessage('Password must be at least 8 characters long'),
+  body('password').isLength({ min: 8 }).withMessage('Password must be at least 8 characters long'),
   body('archetype')
     .isIn(['Warrior', 'Sage', 'Lover', 'Seeker'])
     .withMessage('Archetype must be one of: Warrior, Sage, Lover, Seeker'),
   body('timezone').optional().isString(),
-  body('bedtime').optional().matches(/^([0-1]?[0-9]|2[0-3]):[0-5][0-9]$/),
+  body('bedtime')
+    .optional()
+    .matches(/^([0-1]?[0-9]|2[0-3]):[0-5][0-9]$/),
 ];
 
 export const loginValidation: ValidationChain[] = [

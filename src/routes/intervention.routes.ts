@@ -1,8 +1,6 @@
 import { Router } from 'express';
 import interventionController from '../controllers/intervention.controller';
 import { authenticate } from '../middleware/auth.middleware';
-import { letterValidation, idParamValidation } from '../utils/validators';
-import { validate } from '../middleware/validation.middleware';
 
 const router = Router();
 

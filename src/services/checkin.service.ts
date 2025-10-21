@@ -49,14 +49,17 @@ export class CheckInService {
       where: { userId },
     });
 
-    return streaks.reduce((acc, streak) => {
-      acc[streak.type] = {
-        current: streak.current,
-        best: streak.best,
-        lastCheck: streak.lastCheck,
-      };
-      return acc;
-    }, {} as Record<string, { current: number; best: number; lastCheck: Date }>);
+    return streaks.reduce(
+      (acc, streak) => {
+        acc[streak.type] = {
+          current: streak.current,
+          best: streak.best,
+          lastCheck: streak.lastCheck,
+        };
+        return acc;
+      },
+      {} as Record<string, { current: number; best: number; lastCheck: Date }>
+    );
   }
 
   private async updateStreak(userId: string) {

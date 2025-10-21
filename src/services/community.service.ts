@@ -31,11 +31,7 @@ export class CommunityService {
     const [messages, total] = await Promise.all([
       prisma.communityMessage.findMany({
         where: {
-          OR: [
-            { isPublic: true },
-            { recipientId: userId },
-            { senderId: userId },
-          ],
+          OR: [{ isPublic: true }, { recipientId: userId }, { senderId: userId }],
         },
         orderBy: { timestamp: 'desc' },
         skip,
@@ -51,11 +47,7 @@ export class CommunityService {
       }),
       prisma.communityMessage.count({
         where: {
-          OR: [
-            { isPublic: true },
-            { recipientId: userId },
-            { senderId: userId },
-          ],
+          OR: [{ isPublic: true }, { recipientId: userId }, { senderId: userId }],
         },
       }),
     ]);
@@ -93,7 +85,7 @@ export class CommunityService {
     };
   }
 
-  async joinRitual(userId: string, ritualId: string) {
+  async joinRitual(_userId: string, ritualId: string) {
     // Placeholder - would create ritual participation record
     return {
       success: true,

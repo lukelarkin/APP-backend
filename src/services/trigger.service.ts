@@ -1,6 +1,5 @@
 import { Queue, Worker } from 'bullmq';
 import prisma from '../config/database';
-import redis from '../config/redis';
 import config from '../config';
 import { TriggerEventDto, Archetype } from '../types';
 import logger from '../utils/logger';
@@ -28,7 +27,7 @@ export class TriggerService {
       data: {
         userId: data.userId,
         eventType: data.eventType,
-        payload: data.payload || {},
+        payload: (data.payload || {}) as Record<string, never>,
       },
     });
 
@@ -139,29 +138,30 @@ export class TriggerService {
   }
 
   private selectIntervention(
-    archetype: Archetype,
+    _archetype: Archetype,
     eventType: string,
     recentCheckIn: { emotion: string; quadrant: string; intensity: number } | null
   ) {
     // Simple intervention selection logic
     // In production, this would be more sophisticated
-    
-    const interventionTypes = ['letter', 'journal', 'breathing', 'gratitude'];
-    
+
     // Select based on event type
     if (eventType.includes('late_night') || eventType.includes('hrv_spike')) {
       return { type: 'breathing', priority: 'high' };
     }
-    
+
     if (recentCheckIn && recentCheckIn.intensity > 7) {
       return { type: 'letter', priority: 'high' };
     }
-    
+
     // Default to journal for most triggers
     return { type: 'journal', priority: 'medium' };
   }
 
-  private formatNotification(archetype: Archetype, intervention: { type: string; priority: string }) {
+  private formatNotification(
+    archetype: Archetype,
+    intervention: { type: string; priority: string }
+  ) {
     const archetypeMessages: Record<Archetype, Record<string, string>> = {
       Warrior: {
         letter: 'Take a breath, Warrior – your Loved One letter awaits',
@@ -173,7 +173,7 @@ export class TriggerService {
         letter: 'Wise one, a message from your loved ones calls to you',
         journal: 'Sage, what wisdom will you uncover today?',
         breathing: 'Center yourself, Sage. Find your calm.',
-        gratitude: 'Sage, reflect on today\'s lessons with gratitude.',
+        gratitude: "Sage, reflect on today's lessons with gratitude.",
       },
       Lover: {
         letter: 'Your heart knows the way – a letter from your loved ones',
@@ -203,7 +203,7 @@ export class TriggerService {
   private async sendPushNotification(pushToken: string, notification: object) {
     // Placeholder for Expo Push Notification integration
     logger.info('Sending push notification:', { pushToken, notification });
-    
+
     // In production:
     // const expo = new Expo({ accessToken: config.expo.accessToken });
     // await expo.sendPushNotificationsAsync([{

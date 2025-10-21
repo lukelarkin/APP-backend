@@ -18,7 +18,11 @@ export class InterventionService {
     const interventions = this.generateInterventions(archetype);
 
     // Cache the result
-    await redis.setex(INTERVENTION_CACHE_KEY(archetype), INTERVENTION_CACHE_TTL, JSON.stringify(interventions));
+    await redis.setex(
+      INTERVENTION_CACHE_KEY(archetype),
+      INTERVENTION_CACHE_TTL,
+      JSON.stringify(interventions)
+    );
 
     return interventions;
   }
@@ -114,8 +118,8 @@ export class InterventionService {
       },
       Sage: {
         journal: [
-          'What wisdom have you gained from today\'s experiences?',
-          'Reflect on a pattern you\'ve noticed. What does it teach you?',
+          "What wisdom have you gained from today's experiences?",
+          "Reflect on a pattern you've noticed. What does it teach you?",
           'How can you use your understanding to guide others?',
         ],
         gratitude: [

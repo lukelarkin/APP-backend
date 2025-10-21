@@ -1,7 +1,7 @@
 import { Router } from 'express';
 import communityController from '../controllers/community.controller';
 import { authenticate } from '../middleware/auth.middleware';
-import { messageValidation, paginationValidation, idParamValidation } from '../utils/validators';
+import { messageValidation, paginationValidation } from '../utils/validators';
 import { validate } from '../middleware/validation.middleware';
 
 const router = Router();

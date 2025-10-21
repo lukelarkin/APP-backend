@@ -4,12 +4,17 @@ import config from '../config';
 import { AuthRequest, JwtPayload } from '../types';
 import { errorResponse } from '../utils/response';
 
-export const authenticate = async (req: AuthRequest, res: Response, next: NextFunction) => {
+export const authenticate = async (
+  req: AuthRequest,
+  res: Response,
+  next: NextFunction
+): Promise<void> => {
   try {
     const authHeader = req.headers.authorization;
 
     if (!authHeader || !authHeader.startsWith('Bearer ')) {
-      return errorResponse(res, 'No token provided', 401);
+      errorResponse(res, 'No token provided', 401);
+      return;
     }
 
     const token = authHeader.substring(7);
@@ -23,9 +28,9 @@ export const authenticate = async (req: AuthRequest, res: Response, next: NextFu
       };
       next();
     } catch (error) {
-      return errorResponse(res, 'Invalid or expired token', 401);
+      errorResponse(res, 'Invalid or expired token', 401);
     }
   } catch (error) {
-    return errorResponse(res, 'Authentication failed', 500);
+    errorResponse(res, 'Authentication failed', 500);
   }
 };

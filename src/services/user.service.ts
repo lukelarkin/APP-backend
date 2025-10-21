@@ -25,7 +25,10 @@ export class UserService {
     return user;
   }
 
-  async updateUser(userId: string, data: { timezone?: string; bedtime?: string; settings?: object }) {
+  async updateUser(
+    userId: string,
+    data: { timezone?: string; bedtime?: string; settings?: object }
+  ) {
     const user = await prisma.user.update({
       where: { id: userId },
       data,
