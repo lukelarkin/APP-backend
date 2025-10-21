@@ -1,0 +1,2 @@
+# Add Docker-specific files to .gitignore
+postgres_data/

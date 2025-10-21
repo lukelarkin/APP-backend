@@ -1,0 +1,183 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id        String   @id @default(uuid())
+  email     String   @unique
+  password  String
+  name      String?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  // Relations
+  profile           UserProfile?
+  archetypes        UserArchetype[]
+  moodCheckIns      MoodCheckIn[]
+  partsCheckIns     PartsCheckIn[]
+  letters           LovedOneLetter[]
+  journalEntries    JournalEntry[]
+  gratitudeEntries  GratitudeEntry[]
+  communityMessages CommunityMessage[]
+  triggers          Trigger[]
+  pushTokens        PushToken[]
+
+  @@map("users")
+}
+
+model UserProfile {
+  id                String   @id @default(uuid())
+  userId            String   @unique
+  bio               String?
+  avatarUrl         String?
+  timezone          String?
+  traumaBackground  String?
+  preferredArchetype String?
+  createdAt         DateTime @default(now())
+  updatedAt         DateTime @updatedAt
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@map("user_profiles")
+}
+
+model UserArchetype {
+  id          String   @id @default(uuid())
+  userId      String
+  archetype   String // e.g., "Warrior", "Healer", "Sage", "Creator", "Lover"
+  strength    Int      @default(0) // 0-100
+  isActive    Boolean  @default(true)
+  description String?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@map("user_archetypes")
+}
+
+model MoodCheckIn {
+  id          String   @id @default(uuid())
+  userId      String
+  mood        String // e.g., "anxious", "calm", "triggered", "safe"
+  intensity   Int // 1-10
+  notes       String?
+  tags        String[] // Related triggers or situations
+  createdAt   DateTime @default(now())
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@map("mood_check_ins")
+}
+
+model PartsCheckIn {
+  id          String   @id @default(uuid())
+  userId      String
+  partName    String // IFS part name (e.g., "Inner Critic", "Protector")
+  emotion     String
+  message     String?
+  burden      String? // What this part is carrying
+  needs       String? // What this part needs
+  createdAt   DateTime @default(now())
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@map("parts_check_ins")
+}
+
+model LovedOneLetter {
+  id          String   @id @default(uuid())
+  userId      String
+  recipient   String // Who the letter is to
+  content     String
+  isDelivered Boolean  @default(false)
+  deliveredAt DateTime?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@map("loved_one_letters")
+}
+
+model JournalEntry {
+  id        String   @id @default(uuid())
+  userId    String
+  title     String?
+  content   String
+  mood      String?
+  tags      String[]
+  isPrivate Boolean  @default(true)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@map("journal_entries")
+}
+
+model GratitudeEntry {
+  id        String   @id @default(uuid())
+  userId    String
+  content   String
+  category  String? // e.g., "person", "experience", "thing"
+  createdAt DateTime @default(now())
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@map("gratitude_entries")
+}
+
+model CommunityMessage {
+  id          String   @id @default(uuid())
+  userId      String
+  content     String
+  isAnonymous Boolean  @default(false)
+  likes       Int      @default(0)
+  flagged     Boolean  @default(false)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@map("community_messages")
+}
+
+model Trigger {
+  id          String   @id @default(uuid())
+  userId      String
+  name        String
+  description String?
+  severity    Int // 1-10
+  coping      String? // Coping strategies
+  webhookUrl  String? // Optional webhook for external integrations
+  isActive    Boolean  @default(true)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@map("triggers")
+}
+
+model PushToken {
+  id        String   @id @default(uuid())
+  userId    String
+  token     String   @unique
+  platform  String // "ios" or "android"
+  isActive  Boolean  @default(true)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@map("push_tokens")
+}
