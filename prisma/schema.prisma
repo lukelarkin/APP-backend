@@ -1,0 +1,129 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id             String   @id @default(cuid())
+  email          String   @unique
+  passwordHash   String
+  archetype      String   // Warrior, Sage, Lover, Seeker
+  timezone       String?  @default("UTC")
+  bedtime        String?  // HH:MM format
+  settings       Json?    @default("{}")
+  pushToken      String?  // Expo or FCM token
+  extensionToken String?  @unique
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
+
+  checkIns          CheckIn[]
+  streaks           Streak[]
+  lovedOneLetters   LovedOneLetter[]
+  sentMessages      CommunityMessage[] @relation("SentMessages")
+  receivedMessages  CommunityMessage[] @relation("ReceivedMessages")
+  triggerEvents     TriggerEvent[]
+  refreshTokens     RefreshToken[]
+
+  @@map("users")
+}
+
+model RefreshToken {
+  id        String   @id @default(cuid())
+  token     String   @unique
+  userId    String
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  expiresAt DateTime
+  createdAt DateTime @default(now())
+
+  @@index([userId])
+  @@map("refresh_tokens")
+}
+
+model CheckIn {
+  id        String   @id @default(cuid())
+  userId    String
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  part      String   // IFS part name (e.g., "Protector", "Exile", "Manager")
+  emotion   String   // Emotion name
+  quadrant  String   // Quadrant name (e.g., "high energy + pleasant")
+  intensity Int      // 1-10 scale
+  notes     String?
+  timestamp DateTime @default(now())
+  createdAt DateTime @default(now())
+
+  @@index([userId, timestamp])
+  @@map("check_ins")
+}
+
+model Streak {
+  id        String   @id @default(cuid())
+  userId    String
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  type      String   // self_led, abstinence
+  current   Int      @default(0)
+  best      Int      @default(0)
+  lastCheck DateTime @default(now())
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@unique([userId, type])
+  @@index([userId])
+  @@map("streaks")
+}
+
+model LovedOneLetter {
+  id        String    @id @default(cuid())
+  userId    String
+  user      User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  subject   String
+  body      String
+  author    String?
+  audioUrl  String?
+  lastUsed  DateTime?
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+
+  @@index([userId])
+  @@map("loved_one_letters")
+}
+
+model CommunityMessage {
+  id          String   @id @default(cuid())
+  senderId    String
+  sender      User     @relation("SentMessages", fields: [senderId], references: [id], onDelete: Cascade)
+  recipientId String?
+  recipient   User?    @relation("ReceivedMessages", fields: [recipientId], references: [id], onDelete: Cascade)
+  messageType String   // gratitude, support, ritual
+  content     String
+  isPublic    Boolean  @default(true)
+  timestamp   DateTime @default(now())
+  createdAt   DateTime @default(now())
+
+  @@index([senderId, timestamp])
+  @@index([recipientId, timestamp])
+  @@index([isPublic, timestamp])
+  @@map("community_messages")
+}
+
+model TriggerEvent {
+  id             String   @id @default(cuid())
+  userId         String
+  user           User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  eventType      String   // site_blocked, late_night, sentiment_high, idle_warning, hrv_spike
+  payload        Json     @default("{}")
+  interventionId String?
+  response       Json?
+  timestamp      DateTime @default(now())
+  createdAt      DateTime @default(now())
+
+  @@index([userId, timestamp])
+  @@index([eventType])
+  @@map("trigger_events")
+}
