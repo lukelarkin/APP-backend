@@ -15,6 +15,7 @@ import gratitudeRoutes from './routes/gratitude';
 import communityRoutes from './routes/community';
 import triggerRoutes from './routes/trigger';
 import pushTokenRoutes from './routes/pushToken';
+import ifsRoutes from './routes/ifs';
 
 const app: Application = express();
 
@@ -40,6 +41,7 @@ app.use('/api/gratitude', gratitudeRoutes);
 app.use('/api/community', communityRoutes);
 app.use('/api/triggers', triggerRoutes);
 app.use('/api/push-tokens', pushTokenRoutes);
+app.use('/ifs', ifsRoutes);
 
 // Error handler (must be last)
 app.use(errorHandler);

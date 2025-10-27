@@ -181,3 +181,15 @@ model PushToken {
 
   @@map("push_tokens")
 }
+
+model IFSCheckIn {
+  id          String   @id @default(cuid())
+  userId      String
+  archetype   String
+  partStage   String
+  reflection  String
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  @@map("ifs_check_ins")
+}
