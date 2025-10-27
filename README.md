@@ -63,6 +63,7 @@ Frontend (React Native/Expo)
 - **Users**: `/api/users/*` - Profile management, settings
 - **Archetypes**: `/api/archetypes/*` - Sacred archetype system
 - **Check-ins**: `/api/parts/*`, `/api/mood/*` - IFS and mood tracking
+- **IFS Check-ins**: `/ifs/checkin`, `/ifs/sync` - **NEW!** IFS reflection tracking
 - **Interventions**: `/api/letters/*`, `/api/journal/*`, `/api/gratitude/*`
 - **Community**: `/api/community/*` - Messages, likes, moderation
 - **Triggers**: `/api/webhooks/*` - Real-time intervention webhooks
@@ -166,13 +167,14 @@ See [API_INTEGRATION_EXAMPLES.md](./API_INTEGRATION_EXAMPLES.md) for complete im
 
 ## Database Schema
 
-11 models supporting complete TARU functionality:
+12 models supporting complete TARU functionality:
 
 - **User** - Accounts with profile and settings
 - **UserProfile** - Extended profile (bio, timezone, archetype)
 - **UserArchetype** - Sacred archetype assignments
 - **MoodCheckIn** - Daily mood tracking
 - **PartsCheckIn** - IFS parts work
+- **IFSCheckIn** - **NEW!** IFS reflection check-ins with streak tracking
 - **LovedOneLetter** - Therapeutic letters
 - **JournalEntry** - Private journaling
 - **GratitudeEntry** - Gratitude practice
