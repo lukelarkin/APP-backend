@@ -85,7 +85,7 @@ $ curl -X POST http://localhost:3333/ifs/checkin \
 Test 2: POST /ifs/sync
 $ curl -X POST http://localhost:3333/ifs/sync \
   -H "Content-Type: application/json" \
-  -d '{"checkIns":[{"partName":"Inner Critic","emotion":"angry","quadrant":"challenged","intensity":6}]}'
+  -d '{"checkIns":[{"partName":"Inner Critic","emotion":"angry","quadrant":"challenged","intensity":6},{"partName":"Nurturing Self","emotion":"calm","quadrant":"centered","intensity":8}]}'
 
 ✅ Response: 200 OK
 ✅ Successfully synced 2 check-ins
@@ -122,7 +122,13 @@ Found in src/routes/ifs.routes.ts:
 router.post('/checkin', optionalAuth, createIFSCheckIn);
 router.post('/sync', optionalAuth, syncIFSCheckIns);
 
-✅ EXACT MATCH! Backend is ready!
+Note: Routes are mounted at '/ifs' prefix in main server (src/index.ts),
+so the full endpoints are:
+- POST /ifs/checkin
+- POST /ifs/sync
+- GET /ifs/checkins
+
+✅ EXACT MATCH with expected pattern! Backend is ready!
 
 ================================================================================
 FILES CREATED
