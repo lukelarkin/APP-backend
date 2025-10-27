@@ -1,5 +1,5 @@
 import { Router } from 'express';
-import { createIFSCheckIn, syncIFSCheckIns, getIFSCheckIns } from '../controllers/ifs.controller';
+import { createIFSCheckIn, syncIFSCheckIns, getIFSCheckIns } from '../controllers/ifs.controller.memory';
 import { optionalAuth } from '../middleware/auth.middleware';
 
 const router = Router();
