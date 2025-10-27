@@ -1,395 +1,226 @@
-# TARU Backend
+# APP-backend
 
-Backend for TARU (Trauma-Aware Recovery Utility): A Node.js & TypeScript Express backend using Prisma & PostgreSQL with JWT auth. Provides comprehensive endpoints for trauma-informed interventions, including archetypes, mood & IFS check-ins, loved-one letters, journaling & gratitude rituals, triggers, community messages & push tokens.
+Backend for APP: Node.js & TypeScript, Postgres via Prisma, JWT auth. Provides endpoints for auth, archetypes, mood & IFS check-ins, loved-one letters, journaling & gratitude rituals, triggers, community messages & push tokens. Supports sacred archetypes & trauma-informed interventions.
 
-## Features
+## 🚀 Quick Start: Merging Frontend and Backend
 
-- 🔐 JWT Authentication (register/login)
-- 👤 User Profile Management
-- 🎭 Sacred Archetype System
-- 💭 Mood Check-ins with Analytics
-- 🧠 IFS (Internal Family Systems) Parts Check-ins
-- 💌 Loved One Letters
-- 📓 Private Journaling
-- 🙏 Gratitude Practice
-- 👥 Anonymous Community Support
-- ⚠️ Trigger Management with Webhooks
-- 📱 Push Notification Token Management
-- 🧪 Comprehensive Test Suite
-- 🚀 CI/CD with GitHub Actions
+> **New here?** Start with the [Executive Summary](./EXECUTIVE_SUMMARY.md) for a complete overview.
 
-## Tech Stack
+This backend is designed to work with the [TARU iOS app](https://github.com/lukelarkin/APP) (React Native/Expo frontend).
 
-- **Runtime**: Node.js 18+
-- **Language**: TypeScript
-- **Framework**: Express.js
-- **Database**: PostgreSQL
-- **ORM**: Prisma
-- **Authentication**: JWT (jsonwebtoken)
-- **Password Hashing**: bcryptjs
-- **Validation**: express-validator
-- **Testing**: Jest + Supertest
+### 📚 Complete Documentation
+
+1. **[EXECUTIVE_SUMMARY.md](./EXECUTIVE_SUMMARY.md)** - ⭐ Start here! Complete overview, timeline, costs
+2. **[FRONTEND_BACKEND_INTEGRATION.md](./FRONTEND_BACKEND_INTEGRATION.md)** - Technical architecture and strategy
+3. **[IMPLEMENTATION_CHECKLIST.md](./IMPLEMENTATION_CHECKLIST.md)** - Step-by-step tasks with code
+4. **[DEPLOYMENT_GUIDE.md](./DEPLOYMENT_GUIDE.md)** - Deploy in 10-15 minutes
+5. **[API_INTEGRATION_EXAMPLES.md](./API_INTEGRATION_EXAMPLES.md)** - Copy-paste React Native code
+6. **[CURRENT_STATE_AND_ROADMAP.md](./CURRENT_STATE_AND_ROADMAP.md)** - What we have vs. what we need
+
+### 🎯 Next Steps to Make a Fully Functional iOS App
+
+The backend is **production-ready** (see PR #1: `copilot/add-nodejs-express-backend`). To complete the integration:
+
+1. **Merge Backend Code**: Merge PR #1 to get the complete backend implementation
+2. **Deploy Backend**: Use Railway.app (10-15 minutes) - [Guide](./DEPLOYMENT_GUIDE.md)
+3. **Add API Layer to Frontend**: Follow the [Implementation Checklist](./IMPLEMENTATION_CHECKLIST.md)
+4. **Update Frontend Screens**: Use [Code Examples](./API_INTEGRATION_EXAMPLES.md)
+5. **Test Integration**: Verify data flows between frontend and backend
+6. **Deploy to App Store**: Build iOS app with production backend URL
+
+**Estimated Time**: 2-3 weeks for complete integration
+
+See [EXECUTIVE_SUMMARY.md](./EXECUTIVE_SUMMARY.md) for the complete plan.
+
+## Architecture Overview
+
+```
+Frontend (React Native/Expo)
+         ↓
+   API Service Layer (NEW)
+         ↓
+   Backend REST API (READY)
+         ↓
+   PostgreSQL Database
+```
+
+**Current Status**:
+- ✅ Backend: Complete and tested
+- ✅ Frontend: Working but offline-only
+- 🔄 Integration: Documented and ready to implement
+
+## Backend Features
+
+### Authentication & Security
+- ✅ JWT-based authentication
+- ✅ Bcrypt password hashing
+- ✅ Protected routes with middleware
+- ✅ Rate limiting
+- ✅ CORS configuration
+
+### Core API Endpoints (40+)
+- **Auth**: `/api/auth/*` - Register, login, logout, refresh tokens
+- **Users**: `/api/users/*` - Profile management, settings
+- **Archetypes**: `/api/archetypes/*` - Sacred archetype system
+- **Check-ins**: `/api/parts/*`, `/api/mood/*` - IFS and mood tracking
+- **IFS Check-ins**: `/ifs/checkin`, `/ifs/sync` - **NEW!** IFS reflection tracking
+- **Interventions**: `/api/letters/*`, `/api/journal/*`, `/api/gratitude/*`
+- **Community**: `/api/community/*` - Messages, likes, moderation
+- **Triggers**: `/api/webhooks/*` - Real-time intervention webhooks
+- **Push**: `/api/push/*` - Notification token management
+
+### Technical Stack
+- **Runtime**: Node.js 18+ with TypeScript
+- **Framework**: Express.js 5.x
+- **Database**: PostgreSQL with Prisma ORM
+- **Authentication**: JWT tokens
+- **Testing**: Jest + Supertest (14 tests)
 - **CI/CD**: GitHub Actions
+- **Deployment**: Docker ready
 
-## Getting Started
+## Quick Local Setup
 
-### Prerequisites
-
-- Node.js 18 or higher
-- PostgreSQL 13 or higher
-- npm or yarn
-
-### Installation
-
-1. Clone the repository:
 ```bash
+# Clone and install
 git clone https://github.com/lukelarkin/APP-backend.git
 cd APP-backend
-```
-
-2. Install dependencies:
-```bash
 npm install
-```
 
-3. Set up environment variables:
-```bash
+# Set up environment
 cp .env.example .env
-```
+# Edit .env with your PostgreSQL URL
 
-Edit `.env` with your configuration:
-```env
-DATABASE_URL="postgresql://user:password@localhost:5432/taru_db"
-JWT_SECRET="your-secret-key"
-PORT=3000
-NODE_ENV=development
-```
+# Run migrations
+npm run prisma:migrate
 
-4. Run database migrations:
-```bash
-npx prisma migrate dev
-```
-
-5. Generate Prisma Client:
-```bash
-npm run prisma:generate
-```
-
-6. Start the development server:
-```bash
+# Start development server
 npm run dev
 ```
 
-The server will start on `http://localhost:3000`
+Backend runs at `http://localhost:3000`
 
-## API Documentation
+## Production Deployment
 
-### Authentication
-
-#### Register
-```http
-POST /api/auth/register
-Content-Type: application/json
-
-{
-  "email": "user@example.com",
-  "password": "password123",
-  "name": "John Doe"
-}
-```
-
-#### Login
-```http
-POST /api/auth/login
-Content-Type: application/json
-
-{
-  "email": "user@example.com",
-  "password": "password123"
-}
-```
-
-### User Profile
-
-All endpoints require authentication with JWT token in header:
-```
-Authorization: Bearer <token>
-```
-
-#### Get Current User
-```http
-GET /api/users/me
-```
-
-#### Get Profile
-```http
-GET /api/users/profile
-```
-
-#### Update Profile
-```http
-PUT /api/users/profile
-Content-Type: application/json
-
-{
-  "bio": "My story...",
-  "timezone": "America/New_York",
-  "preferredArchetype": "Warrior"
-}
-```
-
-### Archetypes
-
-#### Get All Archetypes
-```http
-GET /api/archetypes
-```
-
-#### Create Archetype
-```http
-POST /api/archetypes
-Content-Type: application/json
-
-{
-  "archetype": "Warrior",
-  "strength": 75,
-  "description": "Protector and fighter"
-}
-```
-
-#### Update Archetype
-```http
-PUT /api/archetypes/:id
-Content-Type: application/json
-
-{
-  "strength": 85,
-  "isActive": true
-}
-```
-
-### Mood Check-ins
-
-#### Create Mood Check-in
-```http
-POST /api/mood
-Content-Type: application/json
-
-{
-  "mood": "calm",
-  "intensity": 7,
-  "notes": "Feeling peaceful",
-  "tags": ["meditation", "morning"]
-}
-```
-
-#### Get Mood Check-ins
-```http
-GET /api/mood?limit=30&offset=0
-```
-
-#### Get Mood Statistics
-```http
-GET /api/mood/stats?days=7
-```
-
-### IFS Parts Check-ins
-
-#### Create Parts Check-in
-```http
-POST /api/parts
-Content-Type: application/json
-
-{
-  "partName": "Inner Critic",
-  "emotion": "anxious",
-  "message": "Not good enough",
-  "burden": "Perfectionism",
-  "needs": "Compassion"
-}
-```
-
-#### Get All Parts Check-ins
-```http
-GET /api/parts
-```
-
-#### Get Parts by Name
-```http
-GET /api/parts/:partName
-```
-
-### Interventions
-
-#### Letters to Loved Ones
-
-```http
-POST /api/letters
-Content-Type: application/json
-
-{
-  "recipient": "Mom",
-  "content": "Dear Mom, I wanted to say..."
-}
-```
-
-#### Journal Entries
-
-```http
-POST /api/journal
-Content-Type: application/json
-
-{
-  "title": "Today's reflection",
-  "content": "Today I learned...",
-  "mood": "contemplative",
-  "tags": ["growth", "insight"],
-  "isPrivate": true
-}
-```
-
-#### Gratitude Entries
-
-```http
-POST /api/gratitude
-Content-Type: application/json
-
-{
-  "content": "I'm grateful for...",
-  "category": "experience"
-}
-```
-
-### Community
-
-#### Get Community Messages
-```http
-GET /api/community?limit=50&offset=0
-```
-
-#### Post Community Message
-```http
-POST /api/community
-Content-Type: application/json
-
-{
-  "content": "Just wanted to share my progress...",
-  "isAnonymous": true
-}
-```
-
-#### Like a Message
-```http
-POST /api/community/:id/like
-```
-
-### Triggers
-
-#### Create Trigger
-```http
-POST /api/triggers
-Content-Type: application/json
-
-{
-  "name": "Loud noises",
-  "description": "Sudden loud sounds",
-  "severity": 8,
-  "coping": "Deep breathing, safe space",
-  "webhookUrl": "https://example.com/webhook"
-}
-```
-
-#### Activate Trigger (calls webhook)
-```http
-POST /api/triggers/:id/activate
-```
-
-### Push Tokens
-
-#### Register Push Token
-```http
-POST /api/push-tokens
-Content-Type: application/json
-
-{
-  "token": "expo-push-token-xyz",
-  "platform": "ios"
-}
-```
-
-## Testing
-
-Run tests:
-```bash
-npm test
-```
-
-Run tests with coverage:
-```bash
-npm run test:coverage
-```
-
-Watch mode:
-```bash
-npm run test:watch
-```
-
-## Building for Production
+### Recommended: Railway.app (10-15 minutes)
 
 ```bash
-npm run build
-npm start
+# Install Railway CLI
+npm install -g @railway/cli
+
+# Login and deploy
+railway login
+railway init
+railway add postgresql
+railway up
 ```
 
-## Database Management
+Your backend will be live at `https://your-app.up.railway.app`
 
-### Create a new migration
-```bash
-npx prisma migrate dev --name migration_name
+See [DEPLOYMENT_GUIDE.md](./DEPLOYMENT_GUIDE.md) for other platforms (Render, Heroku, DigitalOcean).
+
+## Frontend Integration
+
+The frontend repository is at [github.com/lukelarkin/APP](https://github.com/lukelarkin/APP).
+
+**Integration Steps**:
+
+1. **Deploy this backend** (10-15 minutes)
+2. **Add API service layer** to frontend (2-3 days)
+3. **Update screens** to use backend (3-5 days)
+4. **Test and deploy** to App Store (1-2 days)
+
+Complete code examples available in [API_INTEGRATION_EXAMPLES.md](./API_INTEGRATION_EXAMPLES.md).
+
+### Example: API Service (Frontend)
+
+```typescript
+// src/services/api.ts
+import axios from 'axios';
+
+const API_BASE_URL = process.env.EXPO_PUBLIC_API_URL;
+
+class APIService {
+  async register(email, password, name) {
+    const response = await axios.post(`${API_BASE_URL}/auth/register`, {
+      email, password, name
+    });
+    // Store token
+    await AsyncStorage.setItem('auth_token', response.data.token);
+    return response.data;
+  }
+  
+  // More methods...
+}
+
+export default new APIService();
 ```
 
-### Open Prisma Studio (database GUI)
-```bash
-npm run prisma:studio
-```
+See [API_INTEGRATION_EXAMPLES.md](./API_INTEGRATION_EXAMPLES.md) for complete implementations.
 
-### Reset database (⚠️ destroys data)
-```bash
-npx prisma migrate reset
-```
+## Testing Integration
 
-## Project Structure
+1. **Start backend**: `npm run dev`
+2. **Start frontend**: `cd ../APP && npm start`
+3. **Use ngrok** for mobile testing: `ngrok http 3000`
+4. **Update frontend** `.env` with ngrok URL
+5. **Test on device**: Register, login, create check-in, view community
 
-```
-├── src/
-│   ├── config/           # Configuration files
-│   ├── controllers/      # Request handlers
-│   ├── middleware/       # Express middleware
-│   ├── routes/           # API routes
-│   ├── __tests__/        # Test files
-│   └── index.ts          # Application entry point
-├── prisma/
-│   └── schema.prisma     # Database schema
-├── .github/
-│   └── workflows/        # CI/CD workflows
-└── dist/                 # Compiled JavaScript
-```
+## Database Schema
 
-## Contributing
+12 models supporting complete TARU functionality:
 
-1. Fork the repository
-2. Create your feature branch (`git checkout -b feature/amazing-feature`)
-3. Commit your changes (`git commit -m 'Add amazing feature'`)
-4. Push to the branch (`git push origin feature/amazing-feature`)
-5. Open a Pull Request
+- **User** - Accounts with profile and settings
+- **UserProfile** - Extended profile (bio, timezone, archetype)
+- **UserArchetype** - Sacred archetype assignments
+- **MoodCheckIn** - Daily mood tracking
+- **PartsCheckIn** - IFS parts work
+- **IFSCheckIn** - **NEW!** IFS reflection check-ins with streak tracking
+- **LovedOneLetter** - Therapeutic letters
+- **JournalEntry** - Private journaling
+- **GratitudeEntry** - Gratitude practice
+- **CommunityMessage** - Community support
+- **Trigger** - Trigger tracking and webhooks
+- **PushToken** - Notification tokens
 
-## License
+All models use cascade deletion for data privacy.
 
-ISC
+## Project Status
+
+| Component | Status | Location |
+|-----------|--------|----------|
+| Backend API | ✅ Complete | PR #1 |
+| Database Schema | ✅ Complete | PR #1 |
+| Authentication | ✅ Complete | PR #1 |
+| Tests | ✅ Passing | PR #1 |
+| Docker | ✅ Ready | PR #1 |
+| CI/CD | ✅ Configured | .github/workflows |
+| Documentation | ✅ Complete | This repo |
+| Frontend Integration | 📋 Documented | This repo |
+| Deployment | 🔄 Ready | [Guide](./DEPLOYMENT_GUIDE.md) |
+
+**Ready to integrate!** Follow [IMPLEMENTATION_CHECKLIST.md](./IMPLEMENTATION_CHECKLIST.md)
+
+## Costs
+
+### Development (Free Options Available)
+- **Render.com**: Free tier (with limitations)
+- **Supabase**: Free PostgreSQL
+- **Expo**: Free builds
+
+### Production
+- **Backend**: $5-10/month (Railway or Render)
+- **Apple Developer**: $99/year
+- **Total**: ~$16/month average
+
+See [DEPLOYMENT_GUIDE.md](./DEPLOYMENT_GUIDE.md) for detailed cost comparison.
 
 ## Support
 
-For trauma-informed design principles and best practices, please refer to:
-- IFS (Internal Family Systems) therapy resources
-- Trauma-aware care guidelines
-- Sacred archetypes in psychology
+- **Getting Started**: [EXECUTIVE_SUMMARY.md](./EXECUTIVE_SUMMARY.md)
+- **Implementation**: [IMPLEMENTATION_CHECKLIST.md](./IMPLEMENTATION_CHECKLIST.md)
+- **Code Examples**: [API_INTEGRATION_EXAMPLES.md](./API_INTEGRATION_EXAMPLES.md)
+- **Issues**: Create issue in this repository
+
+## License
+
+Private project
