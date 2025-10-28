@@ -6,7 +6,7 @@
   "scripts": {
     "build": "tsc",
     "start": "node dist/index.js",
-    "postinstall": "prisma generate",
+    "postinstall": "prisma generate && prisma migrate deploy",
     "dev": "nodemon --exec ts-node src/index.ts",
     "test": "jest",
     "test:watch": "jest --watch",
