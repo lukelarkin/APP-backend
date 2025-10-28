@@ -30,3 +30,5 @@ echo "   Health: https://your-app.up.railway.app/health"
 echo "   IFS Check-in: https://your-app.up.railway.app/ifs/checkin"
 echo ""
 echo "🎯 Ready to deploy! Run the commands above."
+
+
