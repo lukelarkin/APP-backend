@@ -35,13 +35,11 @@ WORKDIR /app
 ENV NODE_ENV=production
 
 COPY package*.json ./
+COPY --from=build /app/prisma ./prisma
 RUN npm ci --only=production
 
 COPY --from=build /app/dist ./dist
-COPY --from=build /app/prisma ./prisma
 # COPY --from=build /app/src/generated ./src/generated
-
-RUN npx prisma generate
 
 EXPOSE 3000
 
